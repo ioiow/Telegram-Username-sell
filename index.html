@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NICKHUB - Премиум Telegram Юзернеймы</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        
+        /* Премиальные цвета */
+        :root {
+            --primary: #0a0a0a;
+            --accent: #0066cc;
+            --accent-hover: #0052a3;
+            --gold: #c9a962;
+            --silver: #8e8e93;
+        }
+        
+        .gradient-text { 
+            background: linear-gradient(135deg, #0066cc 0%, #0099ff 50%, #0066cc 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        
+        .gradient-gold {
+            background: linear-gradient(135deg, #c9a962 0%, #f0d78c 50%, #c9a962 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-primary { 
+            background: linear-gradient(135deg, #0066cc 0%, #0080ff 100%); 
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover { 
+            background: linear-gradient(135deg, #0052a3 0%, #0066cc 100%); 
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 102, 204, 0.3);
+        }
+        
+        .card-hover { 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            border: 1px solid #e5e5e5;
+        }
+        .card-hover:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            border-color: #0066cc;
+        }
+        
+        .page { display: none; animation: fadeIn 0.5s ease; }
+        .page.active { display: block; }
+        
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+        .sidebar.open { transform: translateX(0); }
+        
+        .overlay { opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .overlay.open { opacity: 1; visibility: visible; }
+        
+        /* Карусель - центрирование */
+        .carousel-container { 
+            overflow: hidden; 
+            position: relative; 
+        }
+        .carousel-track { 
+            display: flex; 
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        .carousel-item { 
+            min-width: 100%; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal { opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .modal.open { opacity: 1; visibility: visible; }
+        
+        .username-display {
+            font-weight: 900;
+            letter-spacing: -0.02em;
+        }
+        
+        /* Премиальный блеск */
+        .premium-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .premium-shine::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to right,
+                transparent 0%,
+                rgba(255,255,255,0.1) 50%,
+                transparent 100%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900 min-h-screen">
+
+<script>
+// ╔══════════════════════════════════════════════════════════════════════════════════════╗
+// ║                                                                                      ║
+// ║                              🔧 КОНФИГУРАЦИЯ САЙТА 🔧                                 ║
+// ║                                                                                      ║
+// ║         ВСЕ ВАЖНЫЕ ДАННЫЕ ЗДЕСЬ - ЛЕГКО МЕНЯТЬ ССЫЛКИ, ЦЕНЫ, ТОВАРЫ!                ║
+// ║                                                                                      ║
+// ╚══════════════════════════════════════════════════════════════════════════════════════╝
+
+const CONFIG = {
+    
+    // ═══════════════════════════════════════════════════════════════════════════════════
+    // ███ ОСНОВНАЯ ИНФОРМАЦИЯ О САЙТЕ ███
+    // ═══════════════════════════════════════════════════════════════════════════════════
+    
+    siteName: "UsernameUSL",
+    siteSlogan: "Премиум Telegram Юзернеймы",
+    siteDescription: "Эксклюзивные короткие никнеймы, которые выделят вас среди миллионов пользователей",
+    
+    // ═══════════════════════════════════════════════════════════════════════════════════
+    // ███ КОНТАКТЫ - ЗАМЕНИТЕ НА СВОИ ███
+    // ═══════════════════════════════════════════════════════════════════════════════════
+    
+    contacts: {
+        telegram: "@UsernameUSL_bot",           // Ваш Telegram для поддержки
+        telegramLink: "https://t.me/UsernameUSL_bot",
+        telegramChannel: "@UsernameUSL",     // Ваш Telegram канал
+        telegramChannelLink: "https://t.me/UsernameUSL",
+        email: "Joplo@UsernameUSL.io",             // Ваш Email
+        phone: "+7 (890) 001-55-99"            // Ваш телефон
+    },
+    
+    // ═══════════════════════════════════════════════════════════════════════════════════
+    // ███ КРИПТОВАЛЮТНЫЕ АДРЕСА - ЗАМЕНИТЕ НА СВОИ ███
+    // ═══════════════════════════════════════════════════════════════════════════════════
+    
+    crypto: {
+        btc: {
+            name: "Bitcoin",
+            symbol: "BTC",
+            address: "bc1qufeh2wcarrxqqk5r7nlru25dfjenhfuv9ld5zg",  // ← ВАШ BTC АДРЕС
+            icon: "bitcoin",
+            color: "orange"
+        },
+        usdt: {
+            name: "Tether TRC20",
+            symbol: "USDT",
+            address: "TDjixXoMCQ3MZPE4id34tRojkiEieWfogz",          // ← ВАШ USDT АДРЕС
+            icon: "circle-dollar-sign",
+            color: "green"
+        },
+        ton: {
+            name: "Toncoin",
+            symbol: "TON",
+            address: "UQCfWYj90QwVaf689WQJsUYTmnKaVTM7jhbOx2rnkvaU9UoE",  // ← ВАШ TON АДРЕС
+            icon: "diamond",
+            color: "blue"
+        },
+        eth: {
+            name: "Ethereum",
+            symbol: "ETH",
+            address: "0x11C4fDEa62AeA869bCECB19d4A5B3dF083F4a8e9",  // ← ВАШ NOT АДРЕС
+            icon: "coins",
+            color: "yellow"
+        }
+    },
+    
+    // ═══════════════════════════════════════════════════════════════════════════════════
+    // ███ ОПЛАТА КАРТОЙ ███
+    // ═══════════════════════════════════════════════════════════════════════════════════
+    
+    cardPayment: {
+        enabled: true,
+        link: "",  // ← ССЫЛКА НА ОПЛАТУ КАРТОЙ
+        warning: "Оплата картой может не работать в вашем регионе. Попробуйте включить или отключить VPN."
+    },
+    
+    // ═══════════════════════════════════════════════════════════════════════════════════
+    // ███ НЕДАВНО ПРОДАННЫЕ (показываются на главной в карусели) ███
+    // ═══════════════════════════════════════════════════════════════════════════════════
+    
+    soldShowcase: [
+        { username: "@Flux", price: 2500, buyer: "Криптоинвестор" },
+        { username: "@Nywol", price: 3800, buyer: "Игровая Компании." },
+        { username: "@Zeph", price: 4200, buyer: "Фрилансер." },
+        { username: "@Kuro", price: 2900, buyer: "Бизнес-аналитик." },
+        { username: "@Aero", price: 3500, buyer: "Маркетолог." }
+    ],
+    
+    // ═══════════════════════════════════════════════════════════════════════════════════
+    // ███ ТОВАРЫ (ЮЗЕРНЕЙМЫ) - ДОБАВЛЯЙТЕ НОВЫЕ СЮДА ███
+    // ═══════════════════════════════════════════════════════════════════════════════════
+    //
+    // Чтобы добавить новый товар, скопируйте блок ниже и измените данные:
+    //
+    // {
+    //     id: УНИКАЛЬНЫЙ_НОМЕР,
+    //     username: "@Никнейм",
+    //     description: "Описание",
+    //     price: ЦЕНА_В_ДОЛЛАРАХ,
+    //     priceStars: ЦЕНА_В_STARS,
+    //     category: "Категория",
+    //     available: true,
+    //     starsPaymentLink: "ССЫЛКА_ДЛЯ_ОПЛАТЫ_STARS"
+    // }
+    //
+    // ═══════════════════════════════════════════════════════════════════════════════════
+    
+    products: [
+        {
+            id: 1,
+            username: "@Vexl",
+            description: "Короткий и мощный",
+            price: 850,
+            priceStars: 42500,
+            category: "4 символа",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_vex"
+        },
+        {
+            id: 2,
+            username: "@Lynx",
+            description: "Хищный и стильный",
+            price: 580,
+            priceStars: 29000,
+            category: "4 символа",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_lynx"
+        },
+        {
+            id: 3,
+            username: "@Onyx",
+            description: "Драгоценный камень",
+            price: 620,
+            priceStars: 31000,
+            category: "4 символа",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_onyx"
+        },
+        {
+            id: 4,
+            username: "@Nova",
+            description: "Яркий как звезда",
+            price: 540,
+            priceStars: 27000,
+            category: "4 символа",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_nova"
+        },
+        {
+            id: 5,
+            username: "@Apex",
+            description: "Вершина успеха",
+            price: 700,
+            priceStars: 35000,
+            category: "4 символа",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_apex"
+        },
+        {
+            id: 6,
+            username: "@Dusk",
+            description: "Загадочные сумерки",
+            price: 480,
+            priceStars: 24000,
+            category: "4 символа",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_dusk"
+        },
+        {
+            id: 7,
+            username: "@Myst",
+            description: "Таинственный образ",
+            price: 520,
+            priceStars: 26000,
+            category: "4 символа",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_myst"
+        },
+        {
+            id: 8,
+            username: "@Rift",
+            description: "Разрыв реальности",
+            price: 490,
+            priceStars: 24500,
+            category: "4 символа",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_rift"
+        },
+        {
+            id: 9,
+            username: "@Blaze",
+            description: "Пылающий огонь",
+            price: 680,
+            priceStars: 34000,
+            category: "5 символов",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_blaze"
+        },
+        {
+            id: 10,
+            username: "@Storm",
+            description: "Неукротимая стихия",
+            price: 650,
+            priceStars: 32500,
+            category: "5 символов",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_storm"
+        },
+        {
+            id: 11,
+            username: "@Frost",
+            description: "Ледяная элегантность",
+            price: 620,
+            priceStars: 31000,
+            category: "5 символов",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_frost"
+        },
+        {
+            id: 12,
+            username: "@Shade",
+            description: "Тень и загадка",
+            price: 560,
+            priceStars: 28000,
+            category: "5 символов",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_shade"
+        },
+        {
+            id: 13,
+            username: "@Pulse",
+            description: "Ритм жизни",
+            price: 590,
+            priceStars: 29500,
+            category: "5 символов",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_pulse"
+        },
+        {
+            id: 14,
+            username: "@Nexus",
+            description: "Центр вселенной",
+            price: 720,
+            priceStars: 36000,
+            category: "5 символов",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_nexus"
+        },
+        {
+            id: 15,
+            username: "@Prism",
+            description: "Преломление света",
+            price: 640,
+            priceStars: 32000,
+            category: "5 символов",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_prism"
+        },
+        {
+            id: 16,
+            username: "@Volt",
+            description: "Электрическая энергия",
+            price: 510,
+            priceStars: 25500,
+            category: "4 символа",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_volt"
+        },
+        {
+            id: 17,
+            username: "@Echo",
+            description: "Отголосок вечности",
+            price: 530,
+            priceStars: 26500,
+            category: "4 символа",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_echo"
+        },
+        {
+            id: 18,
+            username: "@Zenith",
+            description: "Высшая точка",
+            price: 780,
+            priceStars: 39000,
+            category: "6 символов",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_zenith"
+        },
+        {
+            id: 19,
+            username: "@Cipher",
+            description: "Зашифрованный код",
+            price: 750,
+            priceStars: 37500,
+            category: "6 символов",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_cipher"
+        },
+        {
+            id: 20,
+            username: "@Vortex",
+            description: "Водоворот силы",
+            price: 820,
+            priceStars: 41000,
+            category: "6 символов",
+            available: true,
+            starsPaymentLink: "https://t.me/your_bot?start=pay_vortex"
+        }
+    ],
+    
+    // ═══════════════════════════════════════════════════════════════════════════════════
+    // ███ СТАТИСТИКА (показывается на главной) ███
+    // ═══════════════════════════════════════════════════════════════════════════════════
+    
+    stats: {
+        soldUsernames: "500+",
+        happyClients: "350+",
+        yearsOnMarket: "3+",
+        onlineSupport: "24/7"
+    },
+    
+    // ═══════════════════════════════════════════════════════════════════════════════════
+    // ███ ОТЗЫВЫ ███
+    // ═══════════════════════════════════════════════════════════════════════════════════
+    
+    reviews: [
+        {
+            name: "Александр М.",
+            username: "@Fruik",
+            price: 2500,
+            rating: 5,
+            text: "Искал короткий никнейм больше года. Здесь нашёл идеальный вариант. Сделка заняла 10 минут!",
+            date: "15 января 2025",
+            avatar: "А"
+        },
+        {
+            name: "Екатерина В.",
+            username: "@Nlopp",
+            price: 3800,
+            rating: 5,
+            text: "Для бизнес-аккаунта важно иметь запоминающийся никнейм. Этот — идеален. Рекомендую!",
+            date: "22 января 2025",
+            avatar: "Е"
+        },
+        {
+            name: "Дмитрий К.",
+            username: "@Zeph",
+            price: 4200,
+            rating: 5,
+            text: "Поддержка ответила за минуту. Оплатил криптой, получил никнейм моментально. Топ сервис!",
+            date: "3 февраля 2025",
+            avatar: "Д"
+        },
+        {
+            name: "Мария С.",
+            username: "@Kuro",
+            price: 2900,
+            rating: 5,
+            text: "Оплатила через Telegram Stars — очень удобно. Никнейм передали за 5 минут.",
+            date: "10 февраля 2025",
+            avatar: "М"
+        },
+        {
+            name: "Игорь Л.",
+            username: "@Aero",
+            price: 3500,
+            rating: 5,
+            text: "Уже третья покупка здесь. Всегда всё чётко и быстро. Лучший магазин!",
+            date: "18 февраля 2025",
+            avatar: "И"
+        },
+        {
+            name: "Анастасия М.",
+            username: "@udder",
+            price: 6000,
+            rating: 5,
+            text: "Сначала думала что скам и мошенничество но мой знакомый который купил уже 3 штуки, мне рассказал об этом сайте, в итоге всё работает не обман)!!",
+            date: "11 января 2026",
+            avatar: "И"
+        }
+    ]
+};
+</script>
+
+<!-- Overlay для бокового меню -->
+<div id="overlay" class="overlay fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" onclick="closeSidebar()"></div>
+
+<!-- Боковое меню -->
+<aside id="sidebar" class="sidebar fixed left-0 top-0 h-full w-80 bg-white shadow-2xl z-50 flex flex-col">
+    <div class="p-6 border-b border-gray-100">
+        <div class="flex justify-between items-center">
+            <h2 class="text-2xl font-black text-gray-900" id="sidebarTitle"></h2>
+            <button onclick="closeSidebar()" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition">
+                <i data-lucide="x" class="w-5 h-5 text-gray-600"></i>
+            </button>
+        </div>
+    </div>
+    
+    <nav class="flex-1 p-4 space-y-1">
+        <a href="#" onclick="showPage('home')" class="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 transition text-gray-700 hover:text-gray-900 group">
+            <div class="w-10 h-10 bg-gray-100 group-hover:bg-blue-100 rounded-xl flex items-center justify-center transition">
+                <i data-lucide="home" class="w-5 h-5 text-gray-600 group-hover:text-blue-600"></i>
+            </div>
+            <span class="font-medium">Главная</span>
+        </a>
+        <a href="#" onclick="showPage('shop')" class="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 transition text-gray-700 hover:text-gray-900 group">
+            <div class="w-10 h-10 bg-gray-100 group-hover:bg-blue-100 rounded-xl flex items-center justify-center transition">
+                <i data-lucide="shopping-bag" class="w-5 h-5 text-gray-600 group-hover:text-blue-600"></i>
+            </div>
+            <span class="font-medium">Магазин</span>
+        </a>
+        <a href="#" onclick="showPage('reviews')" class="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 transition text-gray-700 hover:text-gray-900 group">
+            <div class="w-10 h-10 bg-gray-100 group-hover:bg-blue-100 rounded-xl flex items-center justify-center transition">
+                <i data-lucide="message-circle" class="w-5 h-5 text-gray-600 group-hover:text-blue-600"></i>
+            </div>
+            <span class="font-medium">Отзывы</span>
+        </a>
+        <a href="#" onclick="showPage('about')" class="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 transition text-gray-700 hover:text-gray-900 group">
+            <div class="w-10 h-10 bg-gray-100 group-hover:bg-blue-100 rounded-xl flex items-center justify-center transition">
+                <i data-lucide="info" class="w-5 h-5 text-gray-600 group-hover:text-blue-600"></i>
+            </div>
+            <span class="font-medium">О нас</span>
+        </a>
+        <a href="#" onclick="showPage('contacts')" class="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 transition text-gray-700 hover:text-gray-900 group">
+            <div class="w-10 h-10 bg-gray-100 group-hover:bg-blue-100 rounded-xl flex items-center justify-center transition">
+                <i data-lucide="mail" class="w-5 h-5 text-gray-600 group-hover:text-blue-600"></i>
+            </div>
+            <span class="font-medium">Контакты</span>
+        </a>
+    </nav>
+    
+    <div class="p-6 border-t border-gray-100">
+        <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-5 text-white">
+            <p class="text-sm text-gray-300 mb-3">Нужна помощь?</p>
+            <a id="sidebarTelegram" href="#" target="_blank" class="flex items-center gap-3 text-white hover:text-blue-300 transition font-medium">
+                <i data-lucide="send" class="w-5 h-5"></i>
+                <span id="sidebarTelegramText"></span>
+            </a>
+        </div>
+    </div>
+</aside>
+
+<!-- Модальное окно выбора криптовалюты -->
+<div id="cryptoModal" class="modal fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-bold text-gray-900">Выберите криптовалюту</h3>
+            <button onclick="closeCryptoModal()" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition">
+                <i data-lucide="x" class="w-5 h-5 text-gray-600"></i>
+            </button>
+        </div>
+        <div class="space-y-3" id="cryptoList"></div>
+    </div>
+</div>
+
+<!-- Модальное окно с адресом криптовалюты -->
+<div id="addressModal" class="modal fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-gray-900" id="addressModalTitle">Адрес для оплаты</h3>
+            <button onclick="closeAddressModal()" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition">
+                <i data-lucide="x" class="w-5 h-5 text-gray-600"></i>
+            </button>
+        </div>
+        
+        <div class="bg-gray-50 rounded-2xl p-5 mb-5">
+            <p class="text-sm text-gray-500 mb-2">Сумма к оплате:</p>
+            <p class="text-3xl font-bold text-gray-900" id="addressModalAmount"></p>
+        </div>
+        
+        <div class="bg-gray-50 rounded-2xl p-5 mb-5">
+            <p class="text-sm text-gray-500 mb-2">Адрес кошелька:</p>
+            <p class="text-sm font-mono text-gray-900 break-all leading-relaxed" id="addressModalAddress"></p>
+        </div>
+        
+        <button onclick="copyAddress()" class="w-full btn-primary text-white py-4 rounded-2xl font-semibold flex items-center justify-center gap-3">
+            <i data-lucide="copy" class="w-5 h-5"></i>
+            Скопировать адрес
+        </button>
+        
+        <div class="mt-5 p-4 bg-blue-50 rounded-xl">
+            <p class="text-sm text-blue-800 text-center">
+                После оплаты напишите нам в Telegram для подтверждения
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Шапка -->
+<header class="fixed top-0 left-0 right-0 z-30 bg-white/90 backdrop-blur-xl border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <button onclick="openSidebar()" class="p-2.5 hover:bg-gray-100 rounded-xl transition">
+                <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
+            </button>
+            <h1 class="text-2xl font-black cursor-pointer text-gray-900" onclick="showPage('home')" id="headerTitle"></h1>
+        </div>
+        <nav class="hidden md:flex items-center gap-8">
+            <a href="#" onclick="showPage('home')" class="text-gray-600 hover:text-gray-900 transition font-medium">Главная</a>
+            <a href="#" onclick="showPage('shop')" class="text-gray-600 hover:text-gray-900 transition font-medium">Магазин</a>
+            <a href="#" onclick="showPage('reviews')" class="text-gray-600 hover:text-gray-900 transition font-medium">Отзывы</a>
+            <a href="#" onclick="showPage('about')" class="text-gray-600 hover:text-gray-900 transition font-medium">О нас</a>
+            <a href="#" onclick="showPage('contacts')" class="btn-primary text-white px-6 py-2.5 rounded-full text-sm font-semibold">
+                Связаться
+            </a>
+        </nav>
+    </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════════ -->
+<!-- ГЛАВНАЯ СТРАНИЦА -->
+<!-- ═══════════════════════════════════════════════════════════════════════════════════ -->
+<main id="page-home" class="page active pt-20">
+    
+    <!-- Hero секция -->
+    <section class="min-h-[85vh] flex items-center justify-center px-4 bg-gradient-to-b from-gray-50 to-white">
+        <div class="text-center max-w-4xl">
+            <div class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 rounded-full text-white text-sm font-medium mb-8">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                Эксклюзивные короткие никнеймы
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight text-gray-900">
+                Твой уникальный<br>
+                <span class="gradient-text">юзернейм</span> в Telegram
+            </h1>
+            
+            <p class="text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed" id="heroDescription"></p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="showPage('shop')" class="btn-primary text-white px-10 py-4 rounded-full text-lg font-bold flex items-center justify-center gap-3">
+                    Выбрать никнейм
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </button>
+                <button onclick="showPage('about')" class="bg-gray-100 text-gray-900 px-10 py-4 rounded-full text-lg font-semibold hover:bg-gray-200 transition flex items-center justify-center gap-3">
+                    <i data-lucide="play-circle" class="w-5 h-5"></i>
+                    Узнать больше
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Недавно продано - Карусель -->
+    <section class="py-16 px-4 bg-white">
+        <div class="max-w-xl mx-auto">
+            <p class="text-center text-sm font-medium text-gray-500 mb-6 uppercase tracking-wider">Недавно продано</p>
+            
+            <div class="carousel-container bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-8 shadow-2xl">
+                <div class="carousel-track" id="carouselTrack"></div>
+            </div>
+            
+            <div class="flex justify-center gap-2 mt-6" id="carouselDots"></div>
+        </div>
+    </section>
+
+    <!-- Статистика -->
+    <section class="py-20 px-4 bg-gray-50">
+        <div class="max-w-5xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6" id="statsContainer"></div>
+        </div>
+    </section>
+
+    <!-- Преимущества -->
+    <section class="py-20 px-4 bg-white">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 text-gray-900">Почему выбирают нас</h2>
+            <p class="text-gray-500 text-center mb-14 max-w-2xl mx-auto">Мы создали сервис, которому доверяют сотни клиентов</p>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
+                        <i data-lucide="shield-check" class="w-7 h-7 text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">100% Безопасность</h3>
+                    <p class="text-gray-600 leading-relaxed">Гарантируем безопасную сделку с полным сопровождением. Все риски берём на себя.</p>
+                </div>
+                
+                <div class="bg-white rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mb-6">
+                        <i data-lucide="zap" class="w-7 h-7 text-green-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">Быстрая передача</h3>
+                    <p class="text-gray-600 leading-relaxed">Передаём юзернейм за 5-15 минут после подтверждения оплаты.</p>
+                </div>
+                
+                <div class="bg-white rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center mb-6">
+                        <i data-lucide="gem" class="w-7 h-7 text-purple-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">Эксклюзивность</h3>
+                    <p class="text-gray-600 leading-relaxed">Только редкие короткие никнеймы премиум-класса, которые невозможно получить иначе.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-20 px-4 bg-gray-50">
+        <div class="max-w-3xl mx-auto">
+            <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-12 text-center text-white premium-shine">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Готовы выделиться?</h2>
+                <p class="text-gray-300 mb-8 text-lg">Присоединяйтесь к сотням довольных клиентов</p>
+                <button onclick="showPage('shop')" class="bg-white text-gray-900 px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition">
+                    Перейти в магазин
+                </button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════════ -->
+<!-- СТРАНИЦА МАГАЗИНА -->
+<!-- ═══════════════════════════════════════════════════════════════════════════════════ -->
+<main id="page-shop" class="page pt-24 px-4 min-h-screen bg-gray-50">
+    <div class="max-w-6xl mx-auto pb-20">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-3 text-gray-900">Магазин юзернеймов</h1>
+            <p class="text-gray-500 text-lg">Выберите свой уникальный никнейм</p>
+        </div>
+        
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="productsContainer"></div>
+    </div>
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════════ -->
+<!-- СТРАНИЦА ТОВАРА -->
+<!-- ═══════════════════════════════════════════════════════════════════════════════════ -->
+<main id="page-product" class="page pt-24 px-4 min-h-screen bg-gray-50">
+    <div class="max-w-lg mx-auto pb-20">
+        <button onclick="showPage('shop')" class="text-gray-500 hover:text-gray-900 mb-8 flex items-center gap-2 font-medium">
+            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            Назад в магазин
+        </button>
+        
+        <div class="bg-white rounded-3xl p-8 shadow-lg border border-gray-100" id="productDetail"></div>
+    </div>
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════════ -->
+<!-- СТРАНИЦА ОФОРМЛЕНИЯ ЗАКАЗА -->
+<!-- ═══════════════════════════════════════════════════════════════════════════════════ -->
+<main id="page-checkout" class="page pt-24 px-4 min-h-screen bg-gray-50">
+    <div class="max-w-lg mx-auto pb-20">
+        <button onclick="showPage('product')" class="text-gray-500 hover:text-gray-900 mb-8 flex items-center gap-2 font-medium">
+            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            Назад к товару
+        </button>
+        
+        <div class="bg-white rounded-3xl p-8 shadow-lg border border-gray-100">
+            <div class="flex items-center gap-4 mb-8 pb-6 border-b border-gray-100">
+                <div class="w-14 h-14 bg-gray-900 rounded-2xl flex items-center justify-center">
+                    <i data-lucide="shopping-bag" class="w-7 h-7 text-white"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Оформление заказа</h2>
+                    <p class="text-gray-500">Юзернейм: <span class="font-bold text-blue-600" id="checkoutUsername"></span></p>
+                </div>
+            </div>
+            
+            <!-- Шаг 1: Контактные данные -->
+            <div id="checkoutStep1">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">1</div>
+                    <div>
+                        <h3 class="font-bold text-gray-900">Контактные данные</h3>
+                        <p class="text-sm text-gray-500">Для связи с вами</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-5">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Имя</label>
+                            <input type="text" id="customerName" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition" placeholder="Иван">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Фамилия</label>
+                            <input type="text" id="customerSurname" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition" placeholder="Иванов">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Телефон</label>
+                        <input type="tel" id="customerPhone" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition" placeholder="+7 (999) 123-45-67">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="customerEmail" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition" placeholder="email@example.com">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Ваш Telegram</label>
+                        <input type="text" id="customerTelegram" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition" placeholder="@username">
+                    </div>
+                </div>
+                
+                <button onclick="goToPayment()" class="w-full mt-8 btn-primary text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-3">
+                    Далее — выбор оплаты
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <!-- Шаг 2: Выбор оплаты -->
+            <div id="checkoutStep2" class="hidden">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">2</div>
+                    <div>
+                        <h3 class="font-bold text-gray-900">Способ оплаты</h3>
+                        <p class="text-sm text-gray-500">Выберите удобный вариант</p>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-2xl p-5 mb-6">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">К оплате:</span>
+                        <span class="text-2xl font-bold text-gray-900" id="checkoutPrice"></span>
+                    </div>
+                </div>
+                
+                <div class="space-y-4" id="paymentMethods"></div>
+                
+                <button onclick="showCheckoutStep(1)" class="w-full mt-6 bg-gray-100 text-gray-700 py-3.5 rounded-xl font-medium hover:bg-gray-200 transition flex items-center justify-center gap-2">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    Назад к данным
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════════ -->
+<!-- СТРАНИЦА ОТЗЫВОВ -->
+<!-- ═══════════════════════════════════════════════════════════════════════════════════ -->
+<main id="page-reviews" class="page pt-24 px-4 min-h-screen bg-gray-50">
+    <div class="max-w-3xl mx-auto pb-20">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-3 text-gray-900">Отзывы клиентов</h1>
+            <p class="text-gray-500 text-lg">Что говорят наши покупатели</p>
+        </div>
+        
+        <div class="space-y-6" id="reviewsContainer"></div>
+    </div>
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════════ -->
+<!-- СТРАНИЦА О НАС -->
+<!-- ═══════════════════════════════════════════════════════════════════════════════════ -->
+<main id="page-about" class="page pt-24 px-4 min-h-screen bg-gray-50">
+    <div class="max-w-3xl mx-auto pb-20">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-3 text-gray-900">О компании</h1>
+            <p class="text-gray-500 text-lg">Узнайте больше о нашей команде</p>
+        </div>
+        
+        <div class="space-y-8">
+            <!-- Миссия -->
+            <div class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center">
+                        <i data-lucide="target" class="w-7 h-7 text-blue-600"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900">Наша миссия</h2>
+                </div>
+                <div class="space-y-4 text-gray-600 leading-relaxed">
+                    <p>NICKHUB создан для тех, кто ценит уникальность и понимает силу первого впечатления. В мире, где миллионы людей используют Telegram, выделиться становится всё сложнее.</p>
+                    <p>Мы помогаем получить тот самый короткий, запоминающийся никнейм, который станет вашей визитной карточкой в цифровом пространстве.</p>
+                    <p>За три года работы мы провели более 500 успешных сделок и заработали безупречную репутацию. Каждый никнейм в нашем каталоге — это редкость, которая привлекает внимание и запоминается с первого взгляда.</p>
+                </div>
+            </div>
+            
+            <!-- Преимущества -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                            <i data-lucide="check-circle" class="w-6 h-6 text-green-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900">Наши преимущества</h3>
+                    </div>
+                    <ul class="space-y-4 text-gray-600">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-green-500 mt-0.5 shrink-0"></i>
+                            <span>500+ успешных сделок за 3 года</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-green-500 mt-0.5 shrink-0"></i>
+                            <span>100% гарантия безопасности</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-green-500 mt-0.5 shrink-0"></i>
+                            <span>Поддержка 24/7 в Telegram</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-green-500 mt-0.5 shrink-0"></i>
+                            <span>Передача никнейма за 5-15 минут</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                            <i data-lucide="list-ordered" class="w-6 h-6 text-blue-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900">Как мы работаем</h3>
+                    </div>
+                    <ol class="space-y-4 text-gray-600">
+                        <li class="flex items-start gap-3">
+                            <span class="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0">1</span>
+                            <span>Выбираете понравившийся никнейм</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0">2</span>
+                            <span>Оставляете контактные данные</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0">3</span>
+                            <span>Оплачиваете удобным способом</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0">4</span>
+                            <span>Получаете никнейм в Telegram</span>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            
+            <!-- Гарантии -->
+            <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-8 text-white">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center">
+                        <i data-lucide="shield" class="w-7 h-7 text-white"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">Гарантии безопасности</h2>
+                </div>
+                <div class="space-y-4 text-gray-300 leading-relaxed">
+                    <p>Мы понимаем, что покупка юзернейма — это вопрос доверия. Поэтому мы обеспечиваем полную прозрачность на каждом этапе сделки.</p>
+                    <p>Вы можете проверить отзывы от реальных клиентов, связаться с нами напрямую в Telegram и задать любые вопросы.</p>
+                    <p>За 3 года работы у нас не было ни одной проблемной сделки. Мы дорожим репутацией и гарантируем безопасность каждой транзакции.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════════ -->
+<!-- СТРАНИЦА КОНТАКТОВ -->
+<!-- ═══════════════════════════════════════════════════════════════════════════════════ -->
+<main id="page-contacts" class="page pt-24 px-4 min-h-screen bg-gray-50">
+    <div class="max-w-3xl mx-auto pb-20">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-3 text-gray-900">Контакты</h1>
+            <p class="text-gray-500 text-lg">Свяжитесь с нами любым удобным способом</p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+            <a id="contactTelegram" href="#" target="_blank" class="bg-white rounded-3xl p-8 card-hover block">
+                <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-5">
+                    <i data-lucide="send" class="w-7 h-7 text-blue-600"></i>
+                </div>
+                <h3 class="font-bold text-xl mb-2 text-gray-900">Telegram поддержка</h3>
+                <p class="text-blue-600 font-medium" id="contactTelegramUsername"></p>
+                <p class="text-gray-500 text-sm mt-2">Ответим за 5 минут</p>
+            </a>
+            
+            <a id="contactChannel" href="#" target="_blank" class="bg-white rounded-3xl p-8 card-hover block">
+                <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center mb-5">
+                    <i data-lucide="megaphone" class="w-7 h-7 text-purple-600"></i>
+                </div>
+                <h3 class="font-bold text-xl mb-2 text-gray-900">Telegram канал</h3>
+                <p class="text-blue-600 font-medium" id="contactChannelUsername"></p>
+                <p class="text-gray-500 text-sm mt-2">Новости и обновления</p>
+            </a>
+            
+            <a id="contactEmail" href="#" class="bg-white rounded-3xl p-8 card-hover block">
+                <div class="w-14 h-14 bg-pink-100 rounded-2xl flex items-center justify-center mb-5">
+                    <i data-lucide="mail" class="w-7 h-7 text-pink-600"></i>
+                </div>
+                <h3 class="font-bold text-xl mb-2 text-gray-900">Email</h3>
+                <p class="text-blue-600 font-medium" id="contactEmailAddress"></p>
+                <p class="text-gray-500 text-sm mt-2">Для деловых предложений</p>
+            </a>
+            
+            <div class="bg-white rounded-3xl p-8 card-hover">
+                <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mb-5">
+                    <i data-lucide="phone" class="w-7 h-7 text-green-600"></i>
+                </div>
+                <h3 class="font-bold text-xl mb-2 text-gray-900">Телефон</h3>
+                <p class="text-blue-600 font-medium" id="contactPhone"></p>
+                <p class="text-gray-500 text-sm mt-2">Пн-Вс, 10:00-22:00</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-16 px-4">
+    <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-black mb-3" id="footerTitle"></h2>
+            <p class="text-gray-400">Премиум юзернеймы для Telegram</p>
+        </div>
+        
+        <div class="flex flex-wrap justify-center gap-8 mb-10">
+            <a href="#" onclick="showPage('home')" class="text-gray-400 hover:text-white transition">Главная</a>
+            <a href="#" onclick="showPage('shop')" class="text-gray-400 hover:text-white transition">Магазин</a>
+            <a href="#" onclick="showPage('reviews')" class="text-gray-400 hover:text-white transition">Отзывы</a>
+            <a href="#" onclick="showPage('about')" class="text-gray-400 hover:text-white transition">О нас</a>
+            <a href="#" onclick="showPage('contacts')" class="text-gray-400 hover:text-white transition">Контакты</a>
+        </div>
+        
+        <div class="border-t border-gray-800 pt-8 text-center">
+            <p class="text-gray-500 text-sm">© 2024 <span id="footerCopyright"></span>. Все права защищены.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT -->
+<!-- ═══════════════════════════════════════════════════════════════════════════════════ -->
+<script>
+let currentProduct = null;
+let customerData = {};
+let carouselIndex = 0;
+let currentCryptoAddress = '';
+
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+    initSite();
+    lucide.createIcons();
+});
+
+function initSite() {
+    // Заполняем данные из конфига
+    document.getElementById('sidebarTitle').textContent = CONFIG.siteName;
+    document.getElementById('headerTitle').textContent = CONFIG.siteName;
+    document.getElementById('footerTitle').textContent = CONFIG.siteName;
+    document.getElementById('footerCopyright').textContent = CONFIG.siteName;
+    document.getElementById('heroDescription').textContent = CONFIG.siteDescription;
+    
+    // Контакты
+    document.getElementById('sidebarTelegram').href = CONFIG.contacts.telegramLink;
+    document.getElementById('sidebarTelegramText').textContent = CONFIG.contacts.telegram;
+    
+    document.getElementById('contactTelegram').href = CONFIG.contacts.telegramLink;
+    document.getElementById('contactTelegramUsername').textContent = CONFIG.contacts.telegram;
+    document.getElementById('contactChannel').href = CONFIG.contacts.telegramChannelLink;
+    document.getElementById('contactChannelUsername').textContent = CONFIG.contacts.telegramChannel;
+    document.getElementById('contactEmail').href = 'mailto:' + CONFIG.contacts.email;
+    document.getElementById('contactEmailAddress').textContent = CONFIG.contacts.email;
+    document.getElementById('contactPhone').textContent = CONFIG.contacts.phone;
+    
+    // Рендерим элементы
+    renderCarousel();
+    renderStats();
+    renderProducts();
+    renderReviews();
+    renderCryptoList();
+    
+    // Запускаем автопрокрутку карусели
+    setInterval(nextSlide, 4000);
+}
+
+// ═══════════════════ КАРУСЕЛЬ ═══════════════════
+function renderCarousel() {
+    const track = document.getElementById('carouselTrack');
+    const dots = document.getElementById('carouselDots');
+    
+    track.innerHTML = CONFIG.soldShowcase.map((item, index) => `
+        <div class="carousel-item">
+            <div class="text-center">
+                <p class="text-gray-400 text-sm mb-2">Продано</p>
+                <p class="text-4xl md:text-5xl font-black text-white mb-3">${item.username}</p>
+                <p class="text-2xl font-bold gradient-gold">$${item.price.toLocaleString()}</p>
+                <p class="text-gray-500 text-sm mt-2">Покупатель: ${item.buyer}</p>
+            </div>
+        </div>
+    `).join('');
+    
+    dots.innerHTML = CONFIG.soldShowcase.map((_, index) => `
+        <button onclick="goToSlide(${index})" class="w-2.5 h-2.5 rounded-full transition ${index === 0 ? 'bg-blue-600' : 'bg-gray-300'}"></button>
+    `).join('');
+}
+
+function nextSlide() {
+    carouselIndex = (carouselIndex + 1) % CONFIG.soldShowcase.length;
+    updateCarousel();
+}
+
+function goToSlide(index) {
+    carouselIndex = index;
+    updateCarousel();
+}
+
+function updateCarousel() {
+    const track = document.getElementById('carouselTrack');
+    track.style.transform = `translateX(-${carouselIndex * 100}%)`;
+    
+    document.querySelectorAll('#carouselDots button').forEach((dot, i) => {
+        dot.className = `w-2.5 h-2.5 rounded-full transition ${i === carouselIndex ? 'bg-blue-600' : 'bg-gray-300'}`;
+    });
+}
+
+// ═══════════════════ СТАТИСТИКА ═══════════════════
+function renderStats() {
+    const container = document.getElementById('statsContainer');
+    const stats = [
+        { value: CONFIG.stats.soldUsernames, label: 'Продано никнеймов', icon: 'shopping-bag' },
+        { value: CONFIG.stats.happyClients, label: 'Довольных клиентов', icon: 'users' },
+        { value: CONFIG.stats.yearsOnMarket, label: 'Лет на рынке', icon: 'calendar' },
+        { value: CONFIG.stats.onlineSupport, label: 'Поддержка', icon: 'headphones' }
+    ];
+    
+    container.innerHTML = stats.map(stat => `
+        <div class="text-center bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+            <div class="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="${stat.icon}" class="w-7 h-7 text-gray-700"></i>
+            </div>
+            <div class="text-3xl font-black text-gray-900 mb-2">${stat.value}</div>
+            <div class="text-gray-500 text-sm">${stat.label}</div>
+        </div>
+    `).join('');
+    
+    lucide.createIcons();
+}
+
+// ═══════════════════ ТОВАРЫ ═══════════════════
+function renderProducts() {
+    const container = document.getElementById('productsContainer');
+    const products = CONFIG.products.filter(p => p.available);
+    
+    container.innerHTML = products.map(product => `
+        <div class="bg-white rounded-3xl p-6 card-hover cursor-pointer" onclick="showProduct(${product.id})">
+            <div class="text-center mb-4">
+                <span class="text-4xl font-black text-gray-900 username-display">${product.username}</span>
+            </div>
+            <p class="text-gray-500 text-center text-sm mb-4">${product.description}</p>
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-xs font-medium text-gray-400 bg-gray-100 px-3 py-1.5 rounded-full">${product.category}</span>
+                <span class="text-green-600 text-xs font-medium flex items-center gap-1">
+                    <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> В наличии
+                </span>
+            </div>
+            <div class="text-center mb-5">
+                <span class="text-2xl font-bold text-gray-900">$${product.price}</span>
+            </div>
+            <button class="w-full btn-primary text-white py-3 rounded-xl font-semibold">
+                Купить
+            </button>
+        </div>
+    `).join('');
+    
+    lucide.createIcons();
+}
+
+// ═══════════════════ ОТЗЫВЫ ═══════════════════
+function renderReviews() {
+    const container = document.getElementById('reviewsContainer');
+    
+    container.innerHTML = CONFIG.reviews.map(review => `
+        <div class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+            <div class="flex items-start justify-between mb-5">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-xl font-bold">
+                        ${review.avatar}
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-lg">${review.name}</h3>
+                        <p class="text-gray-500">Купил: <span class="text-blue-600 font-semibold">${review.username}</span> за $${review.price}</p>
+                    </div>
+                </div>
+                <div class="flex gap-1">
+                    ${Array(review.rating).fill('<i data-lucide="star" class="w-5 h-5 text-yellow-400 fill-yellow-400"></i>').join('')}
+                </div>
+            </div>
+            <p class="text-gray-600 leading-relaxed text-lg">"${review.text}"</p>
+            <p class="text-gray-400 text-sm mt-4">${review.date}</p>
+        </div>
+    `).join('');
+    
+    lucide.createIcons();
+}
+
+// ═══════════════════ КРИПТОВАЛЮТЫ ═══════════════════
+function renderCryptoList() {
+    const container = document.getElementById('cryptoList');
+    const cryptos = Object.values(CONFIG.crypto);
+    
+    const colorClasses = {
+        orange: 'bg-orange-100 text-orange-600',
+        green: 'bg-green-100 text-green-600',
+        blue: 'bg-blue-100 text-blue-600',
+        yellow: 'bg-yellow-100 text-yellow-600'
+    };
+    
+    container.innerHTML = cryptos.map(crypto => `
+        <button onclick="selectCrypto('${crypto.symbol}')" class="w-full flex items-center gap-4 p-5 bg-gray-50 hover:bg-gray-100 rounded-2xl transition group">
+            <div class="w-12 h-12 ${colorClasses[crypto.color]} rounded-xl flex items-center justify-center">
+                <i data-lucide="${crypto.icon}" class="w-6 h-6"></i>
+            </div>
+            <div class="flex-1 text-left">
+                <p class="font-semibold text-gray-900">${crypto.name}</p>
+                <p class="text-gray-500 text-sm">${crypto.symbol}</p>
+            </div>
+            <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition"></i>
+        </button>
+    `).join('');
+    
+    lucide.createIcons();
+}
+
+// ═══════════════════ СТРАНИЦА ТОВАРА ═══════════════════
+function showProduct(id) {
+    currentProduct = CONFIG.products.find(p => p.id === id);
+    if (!currentProduct) return;
+    
+    const container = document.getElementById('productDetail');
+    container.innerHTML = `
+        <div class="text-center mb-8">
+            <span class="text-6xl font-black text-gray-900 username-display">${currentProduct.username}</span>
+        </div>
+        
+        <p class="text-gray-500 text-center text-lg mb-8">${currentProduct.description}</p>
+        
+        <div class="bg-gray-50 rounded-2xl p-6 mb-6 space-y-4">
+            <div class="flex justify-between items-center">
+                <span class="text-gray-500">Категория</span>
+                <span class="font-medium text-gray-900">${currentProduct.category}</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-gray-500">Статус</span>
+                <span class="text-green-600 font-medium flex items-center gap-2">
+                    <i data-lucide="check-circle" class="w-4 h-4"></i> Доступен для покупки
+                </span>
+            </div>
+            <div class="border-t border-gray-200 pt-4">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500">Цена</span>
+                    <span class="text-3xl font-bold text-gray-900">$${currentProduct.price}</span>
+                </div>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-gray-500">В Telegram Stars</span>
+                <span class="font-medium text-gray-900">${currentProduct.priceStars.toLocaleString()} Stars</span>
+            </div>
+        </div>
+        
+        <div class="bg-blue-50 border border-blue-100 rounded-2xl p-5 mb-8">
+            <h4 class="font-semibold mb-3 flex items-center gap-2 text-gray-900">
+                <i data-lucide="info" class="w-5 h-5 text-blue-600"></i>
+                Что нужно для покупки
+            </h4>
+            <ul class="text-gray-600 space-y-2">
+                <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Аккаунт Telegram</li>
+                <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Криптокошелёк или Telegram Stars</li>
+            </ul>
+        </div>
+        
+        <button onclick="startCheckout()" class="w-full btn-primary text-white py-4 rounded-2xl font-semibold text-lg flex items-center justify-center gap-3">
+            Оформить заказ
+            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+    `;
+    
+    showPage('product');
+    lucide.createIcons();
+}
+
+// ═══════════════════ ОФОРМЛЕНИЕ ЗАКАЗА ═══════════════════
+function startCheckout() {
+    document.getElementById('checkoutUsername').textContent = currentProduct.username;
+    document.getElementById('checkoutPrice').textContent = `$${currentProduct.price}`;
+    showCheckoutStep(1);
+    showPage('checkout');
+}
+
+function showCheckoutStep(step) {
+    document.getElementById('checkoutStep1').classList.toggle('hidden', step !== 1);
+    document.getElementById('checkoutStep2').classList.toggle('hidden', step !== 2);
+}
+
+function goToPayment() {
+    customerData = {
+        name: document.getElementById('customerName').value,
+        surname: document.getElementById('customerSurname').value,
+        phone: document.getElementById('customerPhone').value,
+        email: document.getElementById('customerEmail').value,
+        telegram: document.getElementById('customerTelegram').value
+    };
+    
+    if (!customerData.name || !customerData.telegram) {
+        alert('Пожалуйста, заполните имя и Telegram');
+        return;
+    }
+    
+    const container = document.getElementById('paymentMethods');
+    
+    let html = `
+        <!-- Криптовалюта -->
+        <button onclick="openCryptoModal()" class="w-full flex items-center gap-4 p-5 bg-orange-50 border-2 border-orange-200 rounded-2xl hover:border-orange-400 transition text-left group">
+            <div class="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center">
+                <i data-lucide="bitcoin" class="w-7 h-7 text-orange-600"></i>
+            </div>
+            <div class="flex-1">
+                <p class="font-bold text-gray-900 text-lg">Криптовалюта</p>
+                <p class="text-gray-500">BTC, USDT, TON, ETH</p>
+            </div>
+            <span class="font-bold text-gray-900 text-lg">$${currentProduct.price}</span>
+        </button>
+        
+        <!-- Telegram Stars -->
+        <a href="${currentProduct.starsPaymentLink}" target="_blank" class="flex items-center gap-4 p-5 bg-blue-50 border-2 border-blue-200 rounded-2xl hover:border-blue-400 transition group">
+            <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center">
+                <i data-lucide="star" class="w-7 h-7 text-blue-600"></i>
+            </div>
+            <div class="flex-1">
+                <p class="font-bold text-gray-900 text-lg">Telegram Stars</p>
+                <p class="text-gray-500">Быстрая оплата в Telegram</p>
+            </div>
+            <span class="font-bold text-gray-900 text-lg">${currentProduct.priceStars.toLocaleString()} ⭐</span>
+        </a>
+    `;
+    
+    // Карты
+    if (CONFIG.cardPayment.enabled) {
+        html += `
+            <a href="${CONFIG.cardPayment.link}" target="_blank" class="flex items-center gap-4 p-5 bg-green-50 border-2 border-green-200 rounded-2xl hover:border-green-400 transition group">
+                <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center">
+                    <i data-lucide="credit-card" class="w-7 h-7 text-green-600"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="font-bold text-gray-900 text-lg">Банковская карта</p>
+                    <p class="text-gray-500">Visa, MasterCard, МИР</p>
+                </div>
+                <span class="font-bold text-gray-900 text-lg">$${currentProduct.price}</span>
+            </a>
+            
+            <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 flex items-start gap-3">
+                <i data-lucide="alert-triangle" class="w-5 h-5 text-yellow-600 shrink-0 mt-0.5"></i>
+                <p class="text-sm text-yellow-800">${CONFIG.cardPayment.warning}</p>
+            </div>
+        `;
+    }
+    
+    html += `
+        <div class="bg-gray-50 rounded-2xl p-5 mt-2">
+            <p class="text-gray-600 mb-2">После оплаты напишите нам:</p>
+            <a href="${CONFIG.contacts.telegramLink}" target="_blank" class="text-blue-600 font-semibold text-lg hover:underline flex items-center gap-2">
+                <i data-lucide="send" class="w-5 h-5"></i>
+                ${CONFIG.contacts.telegram}
+            </a>
+        </div>
+    `;
+    
+    container.innerHTML = html;
+    showCheckoutStep(2);
+    lucide.createIcons();
+}
+
+// ═══════════════════ МОДАЛЬНЫЕ ОКНА ═══════════════════
+function openCryptoModal() {
+    document.getElementById('cryptoModal').classList.add('open');
+    lucide.createIcons();
+}
+
+function closeCryptoModal() {
+    document.getElementById('cryptoModal').classList.remove('open');
+}
+
+function selectCrypto(symbol) {
+    const crypto = CONFIG.crypto[symbol.toLowerCase()];
+    if (!crypto) return;
+    
+    closeCryptoModal();
+    
+    document.getElementById('addressModalTitle').textContent = `Оплата ${crypto.name}`;
+    document.getElementById('addressModalAmount').textContent = `$${currentProduct.price} в ${crypto.symbol}`;
+    document.getElementById('addressModalAddress').textContent = crypto.address;
+    currentCryptoAddress = crypto.address;
+    
+    document.getElementById('addressModal').classList.add('open');
+    lucide.createIcons();
+}
+
+function closeAddressModal() {
+    document.getElementById('addressModal').classList.remove('open');
+}
+
+function copyAddress() {
+    navigator.clipboard.writeText(currentCryptoAddress).then(() => {
+        alert('Адрес скопирован в буфер обмена!');
+    });
+}
+
+// ═══════════════════ НАВИГАЦИЯ ═══════════════════
+function showPage(pageName) {
+    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+    document.getElementById('page-' + pageName).classList.add('active');
+    closeSidebar();
+    window.scrollTo(0, 0);
+    setTimeout(() => lucide.createIcons(), 100);
+}
+
+function openSidebar() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('overlay').classList.add('open');
+}
+
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('open');
+}
+</script>
+
+</body>
+</html>
